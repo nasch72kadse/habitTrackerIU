@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 import os
 import sqlite3
+from datetime import datetime
 
 
-def connect_to_database():
-    con = sqlite3.connect('habit.db')
-    return con
+def connect_to_database(database_name):
+    connection = sqlite3.connect(database_name)
+    return connection
 
 
 def close_connection_to_database(connection):
@@ -19,30 +20,33 @@ def init_sqlite_table(database_name):
     connection = sqlite3.connect(database_name)
     cursor = connection.cursor()
     # Execute SQL query
-    sql = "CREATE TABLE user(" \
-          "chat_id INTEGER PRIMARY KEY, " \
-          "username TEXT, " \
-          "password TEXT, " \
-          "state TEXT)"
-    cursor.execute(sql)
+    sql_habit = "CREATE TABLE Habit(" \
+                "id INTEGER PRIMARY KEY, " \
+                "name varchar(45), " \
+                "days INTEGER, " \
+                "created_date Date, " \
+                "next_task Date" \
+                ")"
+    sql_entries = "CREATE TABLE Entries(" \
+                  "id INTEGER PRIMARY KEY, " \
+                  "done_time Date, " \
+                  "habit_id INTEGER , " \
+                  "FOREIGN KEY (habit_id) REFERENCES Habit(id)" \
+                  ")"
+    cursor.execute(sql_habit)
+    cursor.execute(sql_entries)
     connection.commit()
     # Close connection
+    cursor.close()
     connection.close()
 
 
-def display_title_bar():
-    # Clears the terminal screen, and displays a title bar.
-    os.system('clear')
-    print("\t**********************************************")
-    print("\t***  Greeter - Hello old and new friends!  ***")
-    print("\t**********************************************")
+def check_file_existing(database_name):
+    file_exists = os.path.isfile(database_name)
+    return file_exists
 
 
-def get_user_choice():
-    # Let users know what they can do.
-    print("\n[1] Create a new habit")
-    print("[2] Delete a habit")
-    print("[3] Analyze")
-    print("[4] Confirm a task")
-
-    return input("What would you like to do? ")
+def get_all_habits(connection):
+    cursor = connection.cursor()
+    sql = ""
+    cursor.close()
