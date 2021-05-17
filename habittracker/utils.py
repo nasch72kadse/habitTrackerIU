@@ -3,7 +3,7 @@
 import os
 import sqlite3
 from datetime import datetime
-
+from Habit import Habit
 
 def connect_to_database(database_name):
     connection = sqlite3.connect(database_name)
@@ -47,6 +47,22 @@ def check_file_existing(database_name):
 
 
 def get_all_habits(connection):
+    habit_data_list = get_all_habit_data(connection)
+    habit_list = []
+    for habit_data in habit_data_list:
+        habit_name = habit_data[1]
+        habit_days = habit_data[2]
+        habit_created = habit_data[3]
+        habit_next_task = habit_data[4]
+        habit = Habit(habit_name, habit_days, habit_created, habit_next_task)
+        habit_list.append(habit)
+    return habit_list
+
+
+def get_all_habit_data(connection):
     cursor = connection.cursor()
-    sql = ""
+    habits = cursor.execute('SELECT * FROM Habit', ())
+    habits = habits.fetchall()
     cursor.close()
+    return habits
+
