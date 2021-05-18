@@ -5,6 +5,15 @@ import sqlite3
 from datetime import datetime
 from Habit import Habit
 
+
+def isint(value):
+    try:
+        int(value)
+        return True
+    except ValueError:
+        return False
+
+
 def connect_to_database(database_name):
     connection = sqlite3.connect(database_name)
     return connection
@@ -65,4 +74,3 @@ def get_all_habit_data(connection):
     habits = habits.fetchall()
     cursor.close()
     return habits
-
