@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 import os
 import sqlite3
-from datetime import datetime
 from Habit import Habit
+import datetime
 
 
 def isint(value):
@@ -63,7 +63,7 @@ def get_all_habits(connection):
         habit_days = habit_data[2]
         habit_created = habit_data[3]
         habit_next_task = habit_data[4]
-        habit = Habit(habit_name, habit_days, habit_created, habit_next_task)
+        habit = Habit(habit_name, habit_days, parse_sqlite_date(habit_created), parse_sqlite_date(habit_next_task))
         habit_list.append(habit)
     return habit_list
 
@@ -74,3 +74,8 @@ def get_all_habit_data(connection):
     habits = habits.fetchall()
     cursor.close()
     return habits
+
+
+def parse_sqlite_date(sqlite_date):
+    new_date = datetime.datetime.strptime(sqlite_date, "%Y-%m-%d %H:%M:%S.%f")
+    return new_date

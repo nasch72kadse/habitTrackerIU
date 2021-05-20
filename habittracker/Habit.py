@@ -41,7 +41,8 @@ class Habit(object):
             return False
         # Build connection and insert habit
         cursor = connection.cursor()
-        cursor.execute("INSERT INTO Habit VALUES (?,?,?,?,?)", (None, self.name, self.days, self.created_date, self.next_task))
+        cursor.execute("INSERT INTO Habit VALUES (?,?,?,?,?)",
+                       (None, self.name, self.days, self.created_date, self.next_task))
         cursor.close()
         connection.commit()
 
@@ -60,7 +61,7 @@ class Habit(object):
         cursor = connection.cursor()
         date = datetime.now()
         habit_id = self.get_habit_id(connection)
-        cursor.execute("INSERT INTO Entries VALUES (?,?)", (date, habit_id,))
+        cursor.execute("INSERT INTO Entries VALUES (?,?,?)", (None, date, habit_id,))
         cursor.close()
         connection.commit()
 
@@ -83,7 +84,7 @@ class Habit(object):
 
     def get_all_entries(self, connection):
         cursor = connection.cursor()
-        habit_entries = cursor.execute('SELECT * FROM Entries WHERE habit_id=?', (self.get_habit_id(),))
+        habit_entries = cursor.execute('SELECT * FROM Entries WHERE habit_id=?', (self.get_habit_id(connection),))
         habit_entries = habit_entries.fetchall()
         cursor.close()
         # Order entries by time
