@@ -1,24 +1,32 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from utils import isint, get_all_habits
-from Habit import Habit
+from .utils import isint, get_all_habits
+from .Habit import Habit
 from datetime import datetime
-from HabitCollection import HabitCollection
+from .HabitCollection import HabitCollection
 
 
 def display_title_bar():
-    # Displays a title bar.
+    """
+    Displays a title bar.
+    """
     print("\t*****************************************************")
     print("\t***  Greetings! - Welcome to the Habit Tracker :) ***")
     print("\t*****************************************************")
 
 
 def _print_no_habit():
+    """
+    Print the message that should occurr when no habit exists
+    """
     print("No habit existing! Please first create a habit to continue!")
 
 
 def get_main_user_choice():
-    # Let users know what they can do.
+    """
+    Presents all options and asks the user what to do
+    :return: Input that asks the user what to do
+    """
     print("\n[1] Create a new habit")
     print("[2] Delete a habit")
     print("[3] Analyze")
@@ -27,6 +35,12 @@ def get_main_user_choice():
 
 
 def evaluate_main_user_choice(user_input, connection):
+    """
+    Evaluate user input on main program
+    :param user_input: User choice
+    :param connection: connection object
+    :return:
+    """
     # Get all habits and transform it into a habit collection
     habit_list = get_all_habits(connection)
     habit_collection = HabitCollection(habit_list)
@@ -53,7 +67,10 @@ def evaluate_main_user_choice(user_input, connection):
 
 
 def get_analyze_choice():
-    # Let users know what they can do.
+    """
+    Presents all options and asks the user what to do
+    :return: Input that asks the user what to do
+    """
     print("\n[1] Show all open tasks")
     print("[2] Show all habits with a defined period")
     print("[3] Show the longest streak for a given habit")
@@ -63,6 +80,13 @@ def get_analyze_choice():
 
 
 def evaluate_analyze_choice(user_input, connection, habit_collection):
+    """
+    Evaluate user choice in analyze section
+    :param user_input: User choice
+    :param connection: Connection object
+    :param habit_collection: Current habit_collection
+    :return:
+    """
     if user_input == "1":
         open_tasks = habit_collection.get_open_tasks()
         if open_tasks:
@@ -93,6 +117,11 @@ def evaluate_analyze_choice(user_input, connection, habit_collection):
 
 
 def create_new_habit(connection):
+    """
+    Create new habit in database and print success
+    :param connection: Connection object
+    :return:
+    """
     habit_name = get_valid_habit_name()
     habit_days = get_valid_habit_period()
     created_date = datetime.now()
@@ -100,11 +129,19 @@ def create_new_habit(connection):
     valid_habit = new_habit.create_habit_in_database(connection)
     if valid_habit:
         print("Congrats! You created a new habit!")
+        return True
     else:
         print("Habit already exists")
+        return False
 
 
 def delete_habit(connection, habit_collection):
+    """
+    Delete habit from database
+    :param connection: Connection object
+    :param habit_collection: Current habit collection
+    :return:
+    """
     habit_name = get_valid_habit_name()
     habit = habit_in_habit_collection(habit_name, habit_collection)
     if habit:
@@ -119,14 +156,29 @@ def delete_habit(connection, habit_collection):
 
 
 def get_valid_habit_name():
+    """
+    Let user put in a habit name and check for validity
+    :return: valid habit name or try again
+    """
     habit_name = input("Please enter a valid habit name:")
-    if habit_name != "" and len(habit_name) < 90:
+    if valid_habit_name(habit_name):
         return habit_name
     else:
         return get_valid_habit_name()
 
 
+def valid_habit_name(habit_name):
+    if habit_name != "" and len(habit_name) < 90:
+        return True
+    else:
+        return False
+
+
 def get_valid_habit_period():
+    """
+    Let user put in a habit duration and check for validity
+    :return: valid habit duration or try again
+    """
     habit_period = input("Please enter a valid habit period:")
     if isint(habit_period):
         return int(habit_period)
@@ -135,6 +187,12 @@ def get_valid_habit_period():
 
 
 def habit_in_habit_collection(habit_name, habit_collection):
+    """
+    Check if habit is in habit_collection
+    :param habit_name: name of habit
+    :param habit_collection: habit_collection object
+    :return: Return habit or false
+    """
     for habit in habit_collection.habits:
         if habit.name == habit_name:
             return habit
@@ -142,6 +200,12 @@ def habit_in_habit_collection(habit_name, habit_collection):
 
 
 def confirm_task(connection, habit_collection):
+    """
+    Confirm task for habit specified by user
+    :param connection: connection object
+    :param habit_collection: habit_collection object
+    :return:
+    """
     habit_name = get_valid_habit_name()
     habit = habit_in_habit_collection(habit_name, habit_collection)
-    habit.create_task_entry_in_database(connection)
+    habit.confirm_task(connection)
