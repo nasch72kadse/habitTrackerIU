@@ -119,9 +119,10 @@ def evaluate_analyze_choice(user_input, connection, habit_collection):
         return False
 
 
-def create_new_habit(connection, habit_name=None, habit_days=None):
+def create_new_habit(connection, habit_name=None, habit_days=None, created_date=None):
     """
     Create new habit in database and print success
+    :param created_date: time of creation
     :param habit_days: habit period
     :param habit_name: name of habit
     :param connection: Connection object
@@ -131,7 +132,8 @@ def create_new_habit(connection, habit_name=None, habit_days=None):
         habit_name = get_valid_habit_name()
     if not habit_days:
         habit_days = get_valid_habit_period()
-    created_date = datetime.now()
+    if not created_date:
+        created_date = datetime.now()
     new_habit = Habit(habit_name, habit_days, created_date)
     valid_habit = new_habit.create_habit_in_database(connection)
     if valid_habit:

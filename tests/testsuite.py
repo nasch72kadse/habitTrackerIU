@@ -1,5 +1,5 @@
 import unittest
-from tests import test_commands, test_Habit
+from tests import test_commands, test_Habit, test_HabitCollection
 from create_examples import prepare
 
 def suite():
@@ -12,7 +12,7 @@ def suite():
     # Act and assert
     test_suite.addTest(unittest.makeSuite(test_commands.CommandsTest))
     test_suite.addTest(unittest.makeSuite(test_Habit.HabitTest))
-    #test_suite.addTest(unittest.makeSuite(test_commands.CommandsTest))
+    test_suite.addTest(unittest.makeSuite(test_HabitCollection.HabitCollectionTest))
     return test_suite
 
 
