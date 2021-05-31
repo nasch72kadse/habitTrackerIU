@@ -2,3 +2,5 @@
 .idea/
 
 habittracker/__pycache__/
+
+tests/__pycache__/

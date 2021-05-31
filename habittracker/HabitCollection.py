@@ -53,8 +53,11 @@ class HabitCollection(object):
         :return: longest streak as int
         """
         habit = self._get_habit_by_name(habit_name)
-        longest_streak = habit.get_overall_longest_streak(connection)
-        return longest_streak
+        if habit:
+            longest_streak = habit.get_overall_longest_streak(connection)
+            return longest_streak
+        else:
+            return False
 
     def get_current_longest_streak(self, connection):
         """

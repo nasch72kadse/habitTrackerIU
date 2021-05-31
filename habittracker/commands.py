@@ -103,7 +103,10 @@ def evaluate_analyze_choice(user_input, connection, habit_collection):
     elif user_input == "3":
         habit_name = get_valid_habit_name()
         habit_with_longest_streak = habit_collection.get_longest_streak_for_habit(habit_name, connection)
-        print("The longest streak for this habit was: " + str(habit_with_longest_streak))
+        if habit_with_longest_streak:
+            print("The longest streak for this habit was: " + str(habit_with_longest_streak))
+        else:
+            print("No habits with given name")
     elif user_input == "4":
         habit_with_current_longest_streak, longest_streak = habit_collection.get_current_longest_streak(connection)
         print(
@@ -116,14 +119,18 @@ def evaluate_analyze_choice(user_input, connection, habit_collection):
         return False
 
 
-def create_new_habit(connection):
+def create_new_habit(connection, habit_name=None, habit_days=None):
     """
     Create new habit in database and print success
+    :param habit_days: habit period
+    :param habit_name: name of habit
     :param connection: Connection object
     :return:
     """
-    habit_name = get_valid_habit_name()
-    habit_days = get_valid_habit_period()
+    if not habit_name:
+        habit_name = get_valid_habit_name()
+    if not habit_days:
+        habit_days = get_valid_habit_period()
     created_date = datetime.now()
     new_habit = Habit(habit_name, habit_days, created_date)
     valid_habit = new_habit.create_habit_in_database(connection)
@@ -135,24 +142,24 @@ def create_new_habit(connection):
         return False
 
 
-def delete_habit(connection, habit_collection):
+def delete_habit(connection, habit_collection, habit_name=None):
     """
     Delete habit from database
+    :param habit_name: name of habit
     :param connection: Connection object
     :param habit_collection: Current habit collection
     :return:
     """
-    habit_name = get_valid_habit_name()
+    if not habit_name:
+        habit_name = get_valid_habit_name()
     habit = habit_in_habit_collection(habit_name, habit_collection)
     if habit:
         habit.delete_habit_in_database(connection)
         print("Deleted habit successfully")
         return True
-    new_habit_name = input("Habit could not be found, enter a valid name or type \"exit\" to exit this mode\n")
-    if new_habit_name == "exit":
-        return False
     else:
-        delete_habit(connection, habit_collection)
+        print("Habit could not be found")
+    return False
 
 
 def get_valid_habit_name():

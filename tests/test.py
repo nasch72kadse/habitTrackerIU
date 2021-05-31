@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from utils import connect_to_database, init_sqlite_table, check_file_existing
-from commands import get_main_user_choice, display_title_bar, evaluate_main_user_choice
+from habittracker.utils import connect_to_database, init_sqlite_table, check_file_existing
+from habittracker.commands import get_main_user_choice, display_title_bar, evaluate_main_user_choice
 
-database_name = "habits.db"
+database_name = "testing.db"
 
 # Start program
 display_title_bar()

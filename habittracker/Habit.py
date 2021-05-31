@@ -3,6 +3,16 @@
 from datetime import datetime, timedelta
 
 
+def parse_sqlite_date(sqlite_date):
+    """
+    Parse string from SQLite database to datetime
+    :param sqlite_date: datetime from database
+    :return: datetime object
+    """
+    new_date = datetime.strptime(sqlite_date, "%Y-%m-%d %H:%M:%S.%f")
+    return new_date
+
+
 class Habit(object):
     def __init__(self, name: str, days: int, created_date: datetime, next_task=None):
         self.name = name
@@ -58,7 +68,7 @@ class Habit(object):
         habit_id = self.get_habit_id(connection)
         # Set entries in database
         cursor.execute("UPDATE Habit SET next_task=? WHERE id=?", (next_task_date, habit_id,))
-        cursor.execute("INSERT INTO Entries VALUES (?,?,?)", (None, entry_time, habit_id))
+        cursor.execute("INSERT INTO Entries VALUES (?,?,?)", (None, time_now, habit_id))
         cursor.close()
         connection.commit()
         # Set entries in Habit
@@ -79,6 +89,7 @@ class Habit(object):
                        (None, self.name, self.days, self.created_date, self.next_task))
         cursor.close()
         connection.commit()
+        return True
 
     def delete_habit_in_database(self, connection):
         """
@@ -87,7 +98,7 @@ class Habit(object):
         :return:
         """
         habit_id = self.get_habit_id(connection)
-        if habit_id:
+        if not habit_id:
             return False
         # Build connection and insert habit
         cursor = connection.cursor()
@@ -95,6 +106,7 @@ class Habit(object):
         cursor.execute("DELETE FROM Entries WHERE habit_id=?", (habit_id,))
         cursor.close()
         connection.commit()
+        return True
 
     def get_habit_id(self, connection):
         """
@@ -136,20 +148,22 @@ class Habit(object):
         current_time = None
         habit_entries = self.get_all_entries(connection)
         for habit_entry in habit_entries:
-            tracking_time = habit_entry[1]
+            tracking_time = parse_sqlite_date(habit_entry[1])
             # set initial time
             if not current_time:
                 current_time = tracking_time
+                current_streak += 1
                 continue
             # Now check for streak
             deadline = self._calculate_next_date_for_task_with_buffer(current_time)
             if tracking_time >= deadline:
-                current_streak = 0
+                current_streak = 1
             else:
                 current_streak += 1
             # Check if current streak is the biggest
             if current_streak > longest_streak:
                 longest_streak = current_streak
+            current_time = tracking_time
         return longest_streak
 
     def get_current_streak(self, connection):
@@ -164,10 +178,11 @@ class Habit(object):
         habit_entries.sort(key=lambda x: x[0], reverse=True)
         current_time = datetime.now()
         for habit_entry in habit_entries:
-            tracking_time = habit_entry[1]
-            deadline = self._calculate_last_date_for_task_with_buffer(current_time)
+            tracking_time = parse_sqlite_date(habit_entry[1])
+            deadline = self._calculate_next_date_for_task_with_buffer(current_time)
             if deadline >= tracking_time:
                 current_streak += 1
+                current_time = tracking_time
             else:
                 break
         return current_streak
