@@ -24,7 +24,9 @@ class CommandsTest(unittest.TestCase):
 
     def test_valid_habit_name(self):
         self.assertEqual(valid_habit_name(""), False)
-        self.assertEqual(valid_habit_name("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut l"), False)
+        self.assertEqual(valid_habit_name(
+            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut l"),
+            False)
         self.assertEqual(valid_habit_name("Wash car"), True)
 
     def test_habit_in_habit_collection(self):

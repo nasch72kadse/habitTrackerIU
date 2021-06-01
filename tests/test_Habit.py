@@ -1,3 +1,8 @@
+import os
+import sys
+
+BASE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_PATH)
 import unittest
 from habittracker.utils import connect_to_database, close_connection_to_database
 from habittracker.Habit import Habit

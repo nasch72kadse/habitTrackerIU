@@ -31,7 +31,7 @@ def get_main_user_choice():
     print("[2] Delete a habit")
     print("[3] Analyze")
     print("[4] Confirm a task")
-    return input("What would you like to do?")
+    return input("What would you like to do?\n")
 
 
 def evaluate_main_user_choice(user_input, connection):
@@ -76,7 +76,7 @@ def get_analyze_choice():
     print("[3] Show the longest streak for a given habit")
     print("[4] Show the current longest streak")
     print("[5] Show all tracked habits")
-    return input("What would you like to do?")
+    return input("What would you like to do?\n")
 
 
 def evaluate_analyze_choice(user_input, connection, habit_collection):
@@ -169,7 +169,7 @@ def get_valid_habit_name():
     Let user put in a habit name and check for validity
     :return: valid habit name or try again
     """
-    habit_name = input("Please enter a valid habit name:")
+    habit_name = input("Please enter a valid habit name:\n")
     if valid_habit_name(habit_name):
         return habit_name
     else:
@@ -188,7 +188,7 @@ def get_valid_habit_period():
     Let user put in a habit duration and check for validity
     :return: valid habit duration or try again
     """
-    habit_period = input("Please enter a valid habit period:")
+    habit_period = input("Please enter a valid habit period:\n")
     if isint(habit_period):
         return int(habit_period)
     else:

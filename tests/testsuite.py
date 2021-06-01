@@ -1,6 +1,9 @@
 import unittest
-from tests import test_commands, test_Habit, test_HabitCollection
-from create_examples import prepare
+import test_commands
+import test_Habit
+import test_HabitCollection
+from create_examples import prepare, cleanup
+
 
 def suite():
     """
@@ -17,6 +20,6 @@ def suite():
 
 
 mySuit = suite()
-
 runner = unittest.TextTestRunner()
 runner.run(mySuit)
+cleanup()

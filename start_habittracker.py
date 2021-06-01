@@ -7,9 +7,6 @@ from habittracker.commands import get_main_user_choice, display_title_bar, evalu
 def main():
     database_name = "habits.db"
 
-    # Start program
-    display_title_bar()
-
     # Initialize database when database doesn't exist
     if not check_file_existing(database_name):
         init_sqlite_table(database_name)
@@ -21,7 +18,10 @@ def main():
     display_title_bar()
     while True:
         user_choice = get_main_user_choice()
-        evaluate_main_user_choice(user_choice, connection)
+        if not user_choice == "exit":
+            evaluate_main_user_choice(user_choice, connection)
+        else:
+            break
 
 
 if __name__ == "__main__":

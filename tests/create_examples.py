@@ -1,7 +1,11 @@
-from habittracker import utils
+import os
+import sys
+
+BASE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_PATH)
+import habittracker.utils as utils
 from habittracker.Habit import Habit
 from datetime import datetime, timedelta
-import os
 
 
 def prepare():
@@ -50,4 +54,9 @@ def create_habit_entries(connection, habits, end_datetime):
             next_time = habit.next_task
             habit.confirm_task(connection, entry_time=next_time)
 
-prepare()
+
+def cleanup():
+    db_name = "testing.db"
+    if utils.check_file_existing(db_name):
+        os.remove(db_name)
+
