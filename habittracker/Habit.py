@@ -21,11 +21,13 @@ class Habit(object):
         self.next_task = next_task
         if not self.next_task:
             self.next_task = self._calculate_next_date_for_task(self.created_date)
+
     def __eq__(self, other):
-        if other:
+        if other and isinstance(other, Habit):
             if self.name == other.name and self.days == other.days:
                 return True
         return False
+
     def _calculate_next_date_for_task(self, start_date):
         """
         Calculate the next deadline for a task

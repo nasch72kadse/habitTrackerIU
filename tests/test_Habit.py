@@ -11,6 +11,8 @@ class HabitTest(unittest.TestCase):
         test_habit_2 = Habit("Call mum", 4, datetime.now())
         self.assertEqual(test_habit_1.create_habit_in_database(connection), True)
         self.assertEqual(test_habit_2.create_habit_in_database(connection), False)
+        # Cleanup
+        test_habit_1.delete_habit_in_database(connection)
         close_connection_to_database(connection)
 
     def test_confirm_task(self):
